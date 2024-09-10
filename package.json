@@ -1,0 +1,16 @@
+{
+  "name": "xodarap",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "git-setup": "git config diff.lockb.textconv bun; git config diff.lockb.binary true;",
+    "build": "bun build --compile --minify --sourcemap --target=node index.ts --outfile ./dist/run",
+    "serve": "./dist/run"
+  }
+}

@@ -1,3 +1,7 @@
+# Bun
+dist
+*.bun-build
+
 # MacOS
 .DS_Store
 
