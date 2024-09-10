@@ -1,4 +1,4 @@
-import { fun } from "./src/fun";
+import { fun } from "./fun";
 
 console.log("Starting Bun...");
 
