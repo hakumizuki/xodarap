@@ -13,7 +13,7 @@
     "dev": "bun run index.ts",
     "build": "bun build --compile --minify --sourcemap --target=node index.ts --outfile ./dist/run",
     "serve": "./dist/run",
-    "check": "bunx biome check --write src",
+    "check": "bunx biome check --write apps packages",
     "git-setup": "git config diff.lockb.textconv bun; git config diff.lockb.binary true;",
     "clean": "rm -rf node_modules ./**/*/node_modules bun.lockb ./**/*/bun.lockb"
   },

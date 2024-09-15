@@ -1,9 +1,9 @@
 import {
   default as Document,
   type DocumentProps,
+  Head,
   Html,
   Main,
-  Head,
   NextScript,
 } from "next/document";
 

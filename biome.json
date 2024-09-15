@@ -3,12 +3,21 @@
   "organizeImports": {
     "enabled": true
   },
+  "files": {
+    "ignore": ["./**/*/node_modules/*"]
+  },
   "linter": {
     "enabled": true,
     "rules": {
       "recommended": true,
       "performance": {
         "all": true
+      },
+      "correctness": {
+        "all": true
+      },
+      "nursery": {
+        "noUnusedFunctionParameters": "error"
       }
     }
   },

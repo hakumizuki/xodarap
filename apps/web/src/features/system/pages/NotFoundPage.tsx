@@ -1,8 +1,6 @@
 import Head from "next/head";
 import type { FC } from "react";
 
-import { systemConfig } from "@/features/system/system.config";
-
 type Props = {
   title?: string;
   children?: never;

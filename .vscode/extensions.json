@@ -1,3 +1,10 @@
 {
-  "recommendations": ["biomejs.biome", "oven.bun-vscode"]
+  "recommendations": [
+    "biomejs.biome",
+    "oven.bun-vscode",
+    "folke.vscode-monorepo-workspace",
+    "Orta.vscode-jest",
+    "formulahendry.auto-rename-tag",
+    "kisstkondoros.vscode-codemetrics"
+  ]
 }
