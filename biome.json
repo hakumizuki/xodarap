@@ -9,16 +9,17 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
       "performance": {
-        "all": true
+        "noBarrelFile": "off",
+        "noAccumulatingSpread": "error"
       },
       "correctness": {
         "all": true
       },
       "nursery": {
         "noUnusedFunctionParameters": "error"
-      }
+      },
+      "recommended": true
     }
   },
   "formatter": {
