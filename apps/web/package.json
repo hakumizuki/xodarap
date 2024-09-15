@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@xodarap/core": "workspace:^",
+    "@xodarap/prisma": "workspace:^",
     "@tanstack/react-query": "^5.56.2",
     "@trpc/client": "^11.0.0-rc.502",
     "@trpc/next": "^11.0.0-rc.502",

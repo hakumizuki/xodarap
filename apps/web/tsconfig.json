@@ -19,7 +19,8 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@xodarap/core/*": ["../../../packages/core/src/*"]
+      "@xodarap/core/*": ["../../../packages/core/src/*"],
+      "@xodarap/prisma/*": ["../../../packages/prisma/src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

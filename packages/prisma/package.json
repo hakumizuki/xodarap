@@ -1,5 +1,7 @@
 {
   "name": "@xodarap/prisma",
+  "private": true,
+  "sideEffects": false,
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
