@@ -1,0 +1,34 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("PRISMA_DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../src/generated/client"
+  previewFeatures = ["relationJoins", "metrics"]
+}
+
+generator zod {
+  provider                         = "zod-prisma-types"
+  output                           = "../src/generated/zod"
+  useMultipleFiles                 = false // default is false
+  createInputTypes                 = true // default is true
+  createModelTypes                 = true // default is true
+  addInputTypeValidation           = true // default is true
+  addIncludeType                   = true // default is true
+  addSelectType                    = true // default is true
+  validateWhereUniqueInput         = false // default is false
+  createOptionalDefaultValuesTypes = false // default is false
+  createRelationValuesTypes        = false // default is false
+  createPartialTypes               = false // default is false
+  useDefaultValidators             = true // default is true
+  coerceDate                       = true // default is true
+  writeNullishInModelTypes         = false // default is false
+}
+
+model Document {
+  id        String                 @id @default(cuid())
+  content   String
+  vector    Unsupported("vector")?
+}
