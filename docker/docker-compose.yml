@@ -5,10 +5,13 @@ services:
       - 5432:5432
     volumes:
       - db:/var/lib/postgresql/data
+      - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     environment:
       - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=appuser
       - POSTGRES_DB=main
+      - TZ=UTC
+    mem_limit: 8g
+    cpu_count: 2
 
 volumes:
   db:
