@@ -6,12 +6,27 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
       - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-    environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=main
-      - TZ=UTC
+    env_file:
+      - docker.postgres.env
     mem_limit: 8g
     cpu_count: 2
+
+  datadog-agent:
+    image: datadog/agent:latest
+    env_file:
+    - docker.datadog-agent.env
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    - /proc/:/host/proc/:ro
+    - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+    ports:
+    - 127.0.0.1:8126:8126/tcp
+    environment:
+    - DD_APM_ENABLED=true
+    - DD_APM_NON_LOCAL_TRAFFIC=true
+    - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
+    - DD_AC_EXCLUDE=name:datadog-agent
+    - DD_HOSTNAME=profiler-example
 
 volumes:
   db:
