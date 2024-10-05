@@ -1,0 +1,3 @@
+# @xodarap/api
+- NestJS
+- Hasura
