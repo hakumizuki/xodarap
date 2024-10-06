@@ -1,15 +1,26 @@
 services:
-  db:
+  postgres:
     image: pgvector/pgvector:16
     ports:
       - 5432:5432
     volumes:
-      - db:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
       - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     env_file:
       - docker.postgres.env
     mem_limit: 8g
     cpu_count: 2
+
+  graphql-engine:
+    image: hasura/graphql-engine:v2.43.0
+    depends_on:
+      - "postgres"
+    restart: always
+    env_file:
+      - docker.graphql-engine.env
+    command:
+      - graphql-engine
+      - serve
 
   datadog-agent:
     image: datadog/agent:latest
@@ -29,4 +40,4 @@ services:
     - DD_HOSTNAME=profiler-example
 
 volumes:
-  db:
+  postgres-data:
