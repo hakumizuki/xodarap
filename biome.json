@@ -19,6 +19,9 @@
       "nursery": {
         "noUnusedFunctionParameters": "error"
       },
+      "style": {
+        "useImportType": "off"
+      },
       "recommended": true
     }
   },

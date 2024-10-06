@@ -1,3 +1,4 @@
-# @xodarap/api
+# @xodarap-lab/api
 - NestJS
 - Hasura
+- PostgreSQL
