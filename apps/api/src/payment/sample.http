@@ -1,0 +1,16 @@
+POST http://localhost:3333/payment/createPaymentForUser HTTP/1.1
+content-type: application/json
+
+{
+  "action": {
+    "name": "createPaymentForUser"
+  },
+  "input": {
+    "params": {
+      "user_id": 1,
+      "product_id": 2,
+      "quantity": 10
+    }
+  },
+  "session_variables": {}
+}
