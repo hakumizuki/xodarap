@@ -22,6 +22,11 @@ on:
         type: string
         required: true
         description: The tag or SHA to checkout.
+    secrets:
+      WIF_PROVIDER:
+        required: true
+      WIF_SERVICE_ACCOUNT:
+        required: true
 
 jobs:
   deploy:

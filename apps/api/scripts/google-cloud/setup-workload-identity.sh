@@ -32,7 +32,7 @@ gcloud iam service-accounts get-iam-policy ${APP_SA_EMAIL} --format=json
 # NOTE: Use `projects` instead of `iam service-accounts`
 gcloud projects add-iam-policy-binding ${PROJECT_ID} \
     --member=serviceAccount:${APP_SA_EMAIL} \
-    --role=roles/artifactregistry.writer
+    --role=roles/artifactregistry.admin
 gcloud projects add-iam-policy-binding ${PROJECT_ID} \
     --member=serviceAccount:${APP_SA_EMAIL} \
     --role=roles/iam.serviceAccountUser
