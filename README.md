@@ -2,7 +2,7 @@
 Just a playground for now.
 
 # Monorepo
-Highly inspired by https://github.com/belgattitude/nextjs-monorepo-example.
+Inspired by https://github.com/belgattitude/nextjs-monorepo-example.
 
 # How to run apps in development mode
 1. `$ bun up`
