@@ -33,6 +33,4 @@ jobs:
     with:
       environment: production
       ref: ${{ github.sha }}
-    secrets:
-      WIF_PROVIDER: ${{ secrets.WIF_PROVIDER }}
-      WIF_SERVICE_ACCOUNT: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+    secrets: inherit
