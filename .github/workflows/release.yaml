@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [develop, stage, main]
+    branches: [develop, staging, main]
 
 jobs:
   dev:
@@ -27,7 +27,7 @@ jobs:
   prod:
     if: ${{ github.ref == 'refs/heads/main' || github.base_ref == 'main' }}
     uses: ./.github/workflows/_deployment.yaml
-    permissions: 
+    permissions:
       id-token: write
       contents: read
     with:
