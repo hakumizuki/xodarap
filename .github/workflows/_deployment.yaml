@@ -59,7 +59,7 @@ jobs:
 
       - name: Build and Push Container
         run: |-
-          docker build -f apps/api/Dockerfile -t "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.REPOSITORY }}/${{ secrets.SERVICE }}:${{ inputs.ref }}" ./
+          docker build -f apps/api/Dockerfile -t "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.REPOSITORY }}/${{ secrets.SERVICE }}:${{ inputs.ref }}" apps/api/
           docker push "${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.REPOSITORY }}/${{ secrets.SERVICE }}:${{ inputs.ref }}"
 
       - name: Deploy to Cloud Run
