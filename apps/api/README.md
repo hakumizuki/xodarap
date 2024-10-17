@@ -5,4 +5,4 @@
 
 # Build an app container and run
 1. `$ docker build -t app .`
-1. `$ docker run -p 3333:3333 app`
+1. `$ docker run -p 8080:8080 app`
