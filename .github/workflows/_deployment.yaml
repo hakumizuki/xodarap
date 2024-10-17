@@ -69,7 +69,6 @@ jobs:
           service: ${{ secrets.SERVICE }}
           region: ${{ secrets.REGION }}
           image: ${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.REPOSITORY }}/${{ secrets.SERVICE }}:${{ inputs.ref }}
-          flags: '--verbosity=debug'
           env_vars: |
             NODE_ENV=${{ inputs.environment }}
 
