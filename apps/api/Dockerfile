@@ -25,5 +25,5 @@ COPY . .
 RUN bun run build
 
 USER bun
-EXPOSE 3333/tcp
+EXPOSE ${PORT}/tcp
 ENTRYPOINT [ "bun", "run", "start" ]
