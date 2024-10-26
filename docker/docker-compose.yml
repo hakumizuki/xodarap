@@ -19,7 +19,7 @@ services:
     env_file:
       - docker.graphql-engine.env
     ports:
-      - "4000:4000"
+      - "4000:8080"
     command:
       - graphql-engine
       - serve
