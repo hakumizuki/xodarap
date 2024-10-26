@@ -9,3 +9,9 @@ Inspired by https://github.com/belgattitude/nextjs-monorepo-example.
     - An alias of `docker compose up`.
 1. `$ bun dev`
     - Starts both frontend and backend servers in development mode.
+
+# Ports
+- Web UI (Next.js): 3000
+- API server: 8080
+  - `/graphql` for GraphQL console
+- Hasura console: 4000
