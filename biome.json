@@ -57,6 +57,16 @@
           "test"
         ]
       }
+    },
+    {
+      "include": ["apps/api/**"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noNodejsModules": "off"
+          }
+        }
+      }
     }
   ]
 }
