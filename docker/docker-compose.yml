@@ -2,7 +2,7 @@ services:
   postgres:
     image: pgvector/pgvector:pg16
     ports:
-      - 5432:5432
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
@@ -19,7 +19,7 @@ services:
     env_file:
       - docker.graphql-engine.env
     ports:
-      - "4000:4000"
+      - ${HASURA_GRAPHQL_SERVER_PORT}:${HASURA_GRAPHQL_SERVER_PORT}
     command:
       - graphql-engine
       - serve

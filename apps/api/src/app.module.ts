@@ -1,7 +1,7 @@
 import { HasuraModule } from "@golevelup/nestjs-hasura";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
@@ -13,34 +13,43 @@ const path = require("node:path");
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     PaymentModule,
     HouseModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       autoSchemaFile: true,
       driver: ApolloDriver,
     }),
-    HasuraModule.forRoot(HasuraModule, {
-      webhookConfig: {
-        /**
-         * The value of the secret Header. The Hasura module will ensure that incoming webhook payloads contain this
-         * value in order to validate that it is a trusted request
-         */
-        secretFactory: "secret",
-        /** The name of the Header that Hasura will send along with all event payloads */
-        secretHeader: "secret-header",
-      },
-      managedMetaDataConfig: {
-        metadataVersion: "v3",
-        dirPath: path.join(process.cwd(), "hasura/metadata"),
-        secretHeaderEnvName: "HASURA_NESTJS_WEBHOOK_SECRET_HEADER_VALUE",
-        nestEndpointEnvName: "NESTJS_EVENT_WEBHOOK_ENDPOINT",
-        defaultEventRetryConfig: {
-          intervalInSeconds: 15,
-          numRetries: 3,
-          timeoutInSeconds: 100,
-          toleranceSeconds: 21600,
-        },
+    HasuraModule.forRootAsync(HasuraModule, {
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const webhookSecret = configService.get<string>(
+          "API_EVENT_WEBHOOK_SHARED_SECRET",
+        );
+
+        const environment = configService.get<string | undefined>("NODE_ENV");
+
+        return {
+          webhookConfig: {
+            secretFactory: webhookSecret,
+            secretHeader: "nestjs-event-webhook",
+          },
+          managedMetaDataConfig:
+            environment === undefined || environment === "development"
+              ? {
+                  metadataVersion: "v3",
+                  dirPath: path.join(process.cwd(), "hasura/metadata"),
+                  nestEndpointEnvName: "API_EVENT_WEBHOOK_ENDPOINT",
+                  secretHeaderEnvName: "API_EVENT_WEBHOOK_SHARED_SECRET",
+                  defaultEventRetryConfig: {
+                    numRetries: 3,
+                    timeoutInSeconds: 100,
+                    intervalInSeconds: 30,
+                    toleranceSeconds: 21600,
+                  },
+                }
+              : undefined,
+        };
       },
     }),
   ],
