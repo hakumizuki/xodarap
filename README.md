@@ -13,5 +13,3 @@ Inspired by https://github.com/belgattitude/nextjs-monorepo-example.
 # Ports
 - Web UI (Next.js): 3000
 - API server: 8080
-  - `/graphql` for GraphQL console
-- Hasura console: 4000

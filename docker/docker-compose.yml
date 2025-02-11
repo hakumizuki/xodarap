@@ -11,19 +11,6 @@ services:
     mem_limit: 8g
     cpu_count: 2
 
-  graphql-engine:
-    image: hasura/graphql-engine:v2.43.0
-    depends_on:
-      - "postgres"
-    restart: always
-    env_file:
-      - docker.graphql-engine.env
-    ports:
-      - ${HASURA_GRAPHQL_SERVER_PORT}:${HASURA_GRAPHQL_SERVER_PORT}
-    command:
-      - graphql-engine
-      - serve
-
   # datadog-agent:
   #   image: datadog/agent:latest
   #   env_file:
