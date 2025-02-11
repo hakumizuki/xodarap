@@ -11,6 +11,7 @@
   },
   "scripts": {
     "dev": "bun --filter='@xodarap/*' dev",
+    "dev:api": "bun --filter='@xodarap/api' dev",
     "up": "docker compose -f=docker/docker-compose.yml up",
     "build": "bun build --compile --minify --sourcemap --target=node index.ts --outfile ./dist/run",
     "serve": "./dist/run",
