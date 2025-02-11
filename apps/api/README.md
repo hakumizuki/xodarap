@@ -1,6 +1,5 @@
 # @xodarap-lab/api
 - NestJS
-- Hasura
 - PostgreSQL
 
 # Build an app container and run
