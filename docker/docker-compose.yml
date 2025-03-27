@@ -11,6 +11,18 @@ services:
     mem_limit: 8g
     cpu_count: 2
 
+  n8n:
+    image: n8nio/n8n:latest
+    ports:
+      - "5678:5678"
+    env_file:
+      - docker.n8n.env
+    volumes:
+      - n8n-data:/home/node/.n8n
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
   # datadog-agent:
   #   image: datadog/agent:latest
   #   env_file:
@@ -30,3 +42,4 @@ services:
 
 volumes:
   postgres-data:
+  n8n-data:
