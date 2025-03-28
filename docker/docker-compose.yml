@@ -10,6 +10,8 @@ services:
       - docker.postgres.env
     mem_limit: 8g
     cpu_count: 2
+    networks:
+      - default
 
   n8n:
     image: n8nio/n8n:latest
@@ -22,6 +24,8 @@ services:
     depends_on:
       - postgres
     restart: unless-stopped
+    networks:
+      - default
 
   # datadog-agent:
   #   image: datadog/agent:latest
@@ -43,3 +47,6 @@ services:
 volumes:
   postgres-data:
   n8n-data:
+
+networks:
+  default:
