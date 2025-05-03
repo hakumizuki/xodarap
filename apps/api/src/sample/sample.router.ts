@@ -1,26 +1,23 @@
-import { Request, Response, Router } from "express";
-import { SampleDto } from "./dto/SampleDto";
+import { z } from "zod";
+import { publicProcedure, router } from "../trpc";
 import { SampleService } from "./sample.service";
-
-// Create router
-export const sampleRouter = Router();
 
 // Create service instance
 const sampleService = new SampleService();
 
-// Define routes
-sampleRouter.post("/sample", async (req: Request, res: Response) => {
-  try {
-    const body = req.body as SampleDto;
+// Define input schema using zod
+const sampleInputSchema = z.object({
+  id: z.string(),
+});
 
-    if (!body.id) {
-      return res.status(400).json({ message: "id is required" });
-    }
+export const sampleRouter = router({
+  sample: publicProcedure
+    .input(sampleInputSchema)
+    .mutation(async ({ input }) => {
+      if (!input.id) {
+        throw new Error("id is required");
+      }
 
-    const result = await sampleService.execute();
-    return res.json(result);
-  } catch (error) {
-    console.error("Error in sample endpoint:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
+      return sampleService.execute();
+    }),
 });
