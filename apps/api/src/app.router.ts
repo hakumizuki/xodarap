@@ -8,4 +8,8 @@ export const appRouter = router({
   hello: publicProcedure.query(() => {
     return appService.getHello();
   }),
+
+  helloStream: publicProcedure.subscription(() => {
+    return appService.getHelloStream();
+  }),
 });

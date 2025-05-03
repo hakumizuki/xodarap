@@ -1,13 +1,28 @@
 import { initTRPC } from "@trpc/server";
 import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
+import type { IncomingMessage } from "node:http";
 
-// Create context for each request
-export const createContext = ({ req, res }: CreateExpressContextOptions) => ({
+// Type for our context
+export interface Context {
+  req?: unknown;
+  res?: unknown;
+}
+
+// Create context for HTTP requests
+export const createContext = ({
+  req,
+  res,
+}: CreateExpressContextOptions): Context => ({
   req,
   res,
 });
 
-export type Context = Awaited<ReturnType<typeof createContext>>;
+// Create context for WebSocket connections
+export const createWSContext = ({
+  req,
+}: { req: IncomingMessage }): Context => ({
+  req,
+});
 
 // Initialize tRPC
 const t = initTRPC.context<Context>().create();

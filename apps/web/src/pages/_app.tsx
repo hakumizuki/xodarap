@@ -1,6 +1,6 @@
 import { trpc } from "@/utils/trpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { httpBatchLink } from "@trpc/client";
+import { createWSClient, httpBatchLink, splitLink, wsLink } from "@trpc/client";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useState } from "react";
@@ -19,15 +19,30 @@ const App = (appProps: AppProps) => {
   const { Component, pageProps } = appProps;
 
   const [queryClient] = useState(() => new QueryClient());
-  const [trpcClient] = useState(() =>
-    trpc.createClient({
+  const [trpcClient] = useState(() => {
+    const wsClient = createWSClient({
+      url: "ws://localhost:8080/api/trpc",
+    });
+
+    return trpc.createClient({
       links: [
-        httpBatchLink({
-          url: "http://localhost:8080/api/trpc",
+        splitLink({
+          condition(op) {
+            // Check if it's a subscription operation
+            return op.type === "subscription";
+          },
+          // When condition is true, use websocket
+          true: wsLink({
+            client: wsClient,
+          }),
+          // When condition is false, use http
+          false: httpBatchLink({
+            url: "http://localhost:8080/api/trpc",
+          }),
         }),
       ],
-    }),
-  );
+    });
+  });
 
   return (
     <>
