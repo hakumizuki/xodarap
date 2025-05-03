@@ -1,4 +1,8 @@
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/utils/trpc";
+import { AlertCircle, CheckCircle } from "lucide-react";
 import { useState } from "react";
 
 export const DemoPage = () => {
@@ -38,31 +42,35 @@ export const DemoPage = () => {
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto bg-white rounded-xl shadow-md">
-      <h1 className="text-2xl font-bold mb-4">tRPC Demo</h1>
+    <Card className="max-w-md mx-auto">
+      <CardHeader>
+        <CardTitle>tRPC Demo</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <Button
+          onClick={handleFetchHello}
+          disabled={isLoading}
+          className="w-full"
+        >
+          {isLoading ? "Loading..." : "Fetch Hello from API"}
+        </Button>
 
-      <button
-        type="button"
-        onClick={handleFetchHello}
-        disabled={isLoading}
-        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-blue-300"
-      >
-        {isLoading ? "Loading..." : "Fetch Hello from API"}
-      </button>
+        {response && (
+          <Alert variant="default" className="bg-primary/10 border-primary/20">
+            <CheckCircle className="h-4 w-4 text-primary" />
+            <AlertTitle>Response</AlertTitle>
+            <AlertDescription>{response}</AlertDescription>
+          </Alert>
+        )}
 
-      {response && (
-        <div className="mt-4 p-3 bg-green-100 rounded">
-          <h2 className="font-semibold">Response:</h2>
-          <p className="mt-1">{response}</p>
-        </div>
-      )}
-
-      {error && (
-        <div className="mt-4 p-3 bg-red-100 rounded">
-          <h2 className="font-semibold">Error:</h2>
-          <p className="mt-1 text-red-600">{error}</p>
-        </div>
-      )}
-    </div>
+        {error && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+      </CardContent>
+    </Card>
   );
 };
