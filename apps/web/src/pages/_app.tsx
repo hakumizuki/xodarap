@@ -1,6 +1,13 @@
-import { trpc } from "@/utils/trpc";
+import { AppRouter } from "@/types/api";
+import { TRPCProvider } from "@/utils/trpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createWSClient, httpBatchLink, splitLink, wsLink } from "@trpc/client";
+import {
+  createTRPCClient,
+  createWSClient,
+  httpBatchStreamLink,
+  splitLink,
+  wsLink,
+} from "@trpc/client";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useState } from "react";
@@ -11,6 +18,24 @@ import { useState } from "react";
  */
 import "../styles/global.css";
 
+function makeQueryClient() {
+  return new QueryClient();
+}
+let browserQueryClient: QueryClient | undefined = undefined;
+function getQueryClient() {
+  if (typeof window === "undefined") {
+    // Server: always make a new query client
+    return makeQueryClient();
+  }
+
+  // Browser: make a new query client if we don't already have one
+  // This is very important, so we don't re-make a new client if React
+  // suspends during the initial render. This may not be needed if we
+  // have a suspense boundary BELOW the creation of the query client
+  if (!browserQueryClient) browserQueryClient = makeQueryClient();
+  return browserQueryClient;
+}
+
 /**
  * @link https://nextjs.org/docs/advanced-features/custom-app
  */
@@ -18,13 +43,13 @@ const App = (appProps: AppProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { Component, pageProps } = appProps;
 
-  const [queryClient] = useState(() => new QueryClient());
+  const queryClient = getQueryClient();
   const [trpcClient] = useState(() => {
     const wsClient = createWSClient({
       url: "ws://localhost:8080/api/trpc",
     });
 
-    return trpc.createClient({
+    return createTRPCClient<AppRouter>({
       links: [
         splitLink({
           condition(op) {
@@ -36,7 +61,7 @@ const App = (appProps: AppProps) => {
             client: wsClient,
           }),
           // When condition is false, use http
-          false: httpBatchLink({
+          false: httpBatchStreamLink({
             url: "http://localhost:8080/api/trpc",
           }),
         }),
@@ -49,11 +74,11 @@ const App = (appProps: AppProps) => {
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
-      <trpc.Provider client={trpcClient} queryClient={queryClient}>
-        <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
           <Component {...pageProps} />
-        </QueryClientProvider>
-      </trpc.Provider>
+        </TRPCProvider>
+      </QueryClientProvider>
     </>
   );
 };

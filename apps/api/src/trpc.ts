@@ -1,11 +1,12 @@
 import { initTRPC } from "@trpc/server";
 import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
+import type { Response } from "express";
 import type { IncomingMessage } from "node:http";
 
 // Type for our context
 export interface Context {
   req?: unknown;
-  res?: unknown;
+  res?: Response | unknown;
 }
 
 // Create context for HTTP requests

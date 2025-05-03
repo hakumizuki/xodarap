@@ -1,53 +1,68 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { trpc } from "@/utils/trpc";
+import { useTRPC, useTRPCClient } from "@/utils/trpc";
+import { useQuery } from "@tanstack/react-query";
+import { useSubscription } from "@trpc/tanstack-react-query";
 import { AlertCircle, CheckCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export const DemoPage = () => {
   const [response, setResponse] = useState<string | null>(null);
   const [streamedResponse, setStreamedResponse] = useState<string>("");
+  const [httpStreamedResponse, setHttpStreamedResponse] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [isHttpStreaming, setIsHttpStreaming] = useState(false);
   const [streamingComplete, setStreamingComplete] = useState(false);
+  const [httpStreamingComplete, setHttpStreamingComplete] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const trpc = useTRPC();
+  const tClient = useTRPCClient();
+
   // Use tRPC hello query
-  const helloQuery = trpc.app.hello.useQuery(undefined, {
-    enabled: false, // Don't run automatically
-  });
+  const helloQuery = useQuery(
+    trpc.app.hello.queryOptions(undefined, {
+      enabled: false, // Don't run automatically
+    }),
+  );
 
   // Use tRPC hello stream subscription
-  trpc.app.helloStream.useSubscription(undefined, {
-    enabled: isStreaming,
-    onData: (chunk) => {
-      setStreamedResponse((prev) => prev + chunk);
-
-      if (chunk.includes("[end]")) {
-        console.log("Detected server completion marker in chunk:", chunk);
-        // Wait a bit to show the final character before marking as complete
-        setTimeout(() => {
-          setIsStreaming(false);
-          setStreamingComplete(true);
-        }, 500);
-      }
-    },
-    onError: (err) => {
-      setError(err.message);
-      setIsStreaming(false);
-    },
-  });
+  useSubscription(
+    trpc.app.helloStream.subscriptionOptions(undefined, {
+      onData: (chunk) => {
+        setStreamedResponse((prev) => prev + chunk);
+      },
+      onError: (err) => {
+        setError(err.message);
+        setIsStreaming(false);
+      },
+    }),
+  );
 
   // Handle manual subscription disabling
   useEffect(() => {
     // If streaming was manually disabled (e.g., by unmounting)
     // but we have content and haven't marked as complete yet
     if (!isStreaming && streamedResponse && !streamingComplete) {
-      console.log("Manually marking streaming as complete");
+      console.log("Manually marking WebSocket streaming as complete");
       setStreamingComplete(true);
     }
-  }, [isStreaming, streamedResponse, streamingComplete]);
+
+    // Same for HTTP streaming
+    if (!isHttpStreaming && httpStreamedResponse && !httpStreamingComplete) {
+      console.log("Manually marking HTTP streaming as complete");
+      setHttpStreamingComplete(true);
+    }
+  }, [
+    isStreaming,
+    streamedResponse,
+    streamingComplete,
+    isHttpStreaming,
+    httpStreamedResponse,
+    httpStreamingComplete,
+  ]);
 
   // Handle success and error states
   const handleSuccess = (data: string) => {
@@ -82,28 +97,63 @@ export const DemoPage = () => {
     setError(null);
   };
 
+  const handleFetchHelloHttpStream = async () => {
+    setHttpStreamedResponse("");
+    setIsHttpStreaming(true);
+    setHttpStreamingComplete(false);
+    setError(null);
+
+    try {
+      // Start the HTTP streaming query
+      const result = await tClient.app.helloHttpStream.query();
+
+      // Handle the streamed response
+      for await (const chunk of result) {
+        // Append the chunk to the response
+        setHttpStreamedResponse((prev) => prev + chunk);
+      }
+
+      // Mark the streaming as complete
+      setHttpStreamingComplete(true);
+      setIsHttpStreaming(false);
+    } catch (err) {
+      handleError(err as Error);
+      setIsHttpStreaming(false);
+    }
+  };
+
   return (
     <Card className="max-w-md mx-auto">
       <CardHeader>
         <CardTitle>tRPC Demo</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex gap-2">
-          <Button
-            onClick={handleFetchHello}
-            disabled={isLoading || isStreaming}
-            className="flex-1"
-          >
-            {isLoading ? "Loading..." : "Fetch Hello"}
-          </Button>
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2">
+            <Button
+              onClick={handleFetchHello}
+              disabled={isLoading || isStreaming || isHttpStreaming}
+              className="flex-1"
+            >
+              {isLoading ? "Loading..." : "Fetch Hello"}
+            </Button>
+
+            <Button
+              onClick={handleFetchHelloStream}
+              disabled={isLoading || isStreaming || isHttpStreaming}
+              className="flex-1"
+              variant="secondary"
+            >
+              {isStreaming ? "Streaming..." : "WebSocket Stream"}
+            </Button>
+          </div>
 
           <Button
-            onClick={handleFetchHelloStream}
-            disabled={isLoading || isStreaming}
-            className="flex-1"
-            variant="secondary"
+            onClick={handleFetchHelloHttpStream}
+            disabled={isLoading || isStreaming || isHttpStreaming}
+            variant="outline"
           >
-            {isStreaming ? "Streaming..." : "Fetch Hello Stream"}
+            {isHttpStreaming ? "HTTP Streaming..." : "HTTP Batch Stream"}
           </Button>
         </div>
 
@@ -128,7 +178,7 @@ export const DemoPage = () => {
               className={`h-4 w-4 ${streamingComplete ? "text-green-500" : "text-secondary"}`}
             />
             <AlertTitle className="flex items-center gap-2">
-              Streamed Response
+              WebSocket Streamed Response
               {isStreaming && (
                 <span className="text-sm font-normal text-amber-600 animate-pulse">
                   (receiving...)
@@ -143,6 +193,38 @@ export const DemoPage = () => {
             <AlertDescription className="font-mono">
               {streamedResponse}
               {isStreaming && <span className="animate-pulse">|</span>}
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {httpStreamedResponse && (
+          <Alert
+            variant="default"
+            className={`${
+              httpStreamingComplete
+                ? "bg-blue-100 border-blue-200"
+                : "bg-blue-50/50 border-blue-100/50"
+            } transition-colors duration-300`}
+          >
+            <CheckCircle
+              className={`h-4 w-4 ${httpStreamingComplete ? "text-blue-500" : "text-blue-300"}`}
+            />
+            <AlertTitle className="flex items-center gap-2">
+              HTTP Streamed Response
+              {isHttpStreaming && (
+                <span className="text-sm font-normal text-amber-600 animate-pulse">
+                  (receiving...)
+                </span>
+              )}
+              {httpStreamingComplete && (
+                <span className="text-sm font-normal text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+                  Complete ✓
+                </span>
+              )}
+            </AlertTitle>
+            <AlertDescription className="font-mono">
+              {httpStreamedResponse}
+              {isHttpStreaming && <span className="animate-pulse">|</span>}
             </AlertDescription>
           </Alert>
         )}

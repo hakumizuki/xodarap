@@ -19,7 +19,7 @@
     "@langchain/core": "^0.3.39",
     "@langchain/langgraph": "^0.2.45",
     "@langchain/openai": "^0.4.3",
-    "@trpc/server": "^11.0.0-rc.502",
+    "@trpc/server": "^11.1.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",

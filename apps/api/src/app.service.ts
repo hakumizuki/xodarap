@@ -5,26 +5,30 @@ export class AppService {
     return "Hello World!";
   }
 
+  // Get the array of words to stream
+  getStreamWords(): string[] {
+    return [
+      "Hello",
+      " ",
+      "World",
+      "!",
+      " ",
+      "This",
+      " ",
+      "is",
+      " ",
+      "a",
+      " ",
+      "streaming",
+      " ",
+      "response!",
+    ];
+  }
+
   getHelloStream() {
     return observable<string>((observer) => {
       // Define the message parts to stream
-      const words = [
-        "Hello",
-        " ",
-        "World",
-        "!",
-        " ",
-        "This",
-        " ",
-        "is",
-        " ",
-        "a",
-        " ",
-        "streaming",
-        " ",
-        "response!",
-        "[end]",
-      ];
+      const words = this.getStreamWords();
       let index = 0;
 
       console.log("Starting stream...");
