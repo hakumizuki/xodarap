@@ -1,6 +1,6 @@
-import { Injectable } from "@nestjs/common";
-
-@Injectable()
 export class SampleService {
-  async execute() {}
+  async execute() {
+    // Return an empty object for now
+    return {};
+  }
 }

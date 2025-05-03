@@ -4,10 +4,11 @@
   "type": "module",
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/node": "^22.15.2"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.8.3"
   },
   "scripts": {
     "dev": "bun --filter='@xodarap/*' dev",

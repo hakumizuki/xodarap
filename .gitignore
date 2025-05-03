@@ -2,6 +2,9 @@
 dist
 *.bun-build
 
+# Mastra
+.mastra
+
 # MacOS
 .DS_Store
 
