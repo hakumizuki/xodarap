@@ -32,12 +32,19 @@ export const DemoPage = () => {
   useSubscription(
     trpc.app.helloStream.subscriptionOptions(undefined, {
       onData: (chunk) => {
+        if (chunk === "[end]") {
+          setStreamingComplete(true);
+          setIsStreaming(false);
+          return;
+        }
+
         setStreamedResponse((prev) => prev + chunk);
       },
       onError: (err) => {
         setError(err.message);
         setIsStreaming(false);
       },
+      enabled: isStreaming,
     }),
   );
 
