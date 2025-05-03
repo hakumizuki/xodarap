@@ -5,7 +5,7 @@ import { useTRPC, useTRPCClient } from "@/utils/trpc";
 import { useQuery } from "@tanstack/react-query";
 import { useSubscription } from "@trpc/tanstack-react-query";
 import { AlertCircle, CheckCircle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export const DemoPage = () => {
   const [response, setResponse] = useState<string | null>(null);
@@ -47,29 +47,6 @@ export const DemoPage = () => {
       enabled: isStreaming,
     }),
   );
-
-  // Handle manual subscription disabling
-  useEffect(() => {
-    // If streaming was manually disabled (e.g., by unmounting)
-    // but we have content and haven't marked as complete yet
-    if (!isStreaming && streamedResponse && !streamingComplete) {
-      console.log("Manually marking WebSocket streaming as complete");
-      setStreamingComplete(true);
-    }
-
-    // Same for HTTP streaming
-    if (!isHttpStreaming && httpStreamedResponse && !httpStreamingComplete) {
-      console.log("Manually marking HTTP streaming as complete");
-      setHttpStreamingComplete(true);
-    }
-  }, [
-    isStreaming,
-    streamedResponse,
-    streamingComplete,
-    isHttpStreaming,
-    httpStreamedResponse,
-    httpStreamingComplete,
-  ]);
 
   // Handle success and error states
   const handleSuccess = (data: string) => {
