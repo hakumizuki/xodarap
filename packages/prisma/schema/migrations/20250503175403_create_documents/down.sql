@@ -1,0 +1,4 @@
+DROP TABLE IF EXISTS "Document" CASCADE;
+
+-- DropExtension
+DROP EXTENSION IF EXISTS vector SCHEMA public;
