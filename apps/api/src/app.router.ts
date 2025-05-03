@@ -10,8 +10,13 @@ export const appRouter = router({
   }),
 
   // WebSocket-based streaming using subscription
-  helloStream: publicProcedure.subscription(() => {
-    return appService.getHelloStream();
+  helloStream: publicProcedure.subscription(async function* () {
+    const words = appService.getStreamWords().concat("[end]");
+    for (const word of words) {
+      yield word;
+      // Simulate a delay between words
+      await new Promise((resolve) => setTimeout(resolve, 300));
+    }
   }),
 
   // HTTP-based streaming using query
