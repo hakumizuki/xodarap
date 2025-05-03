@@ -7,7 +7,7 @@ import { sampleRouter } from "./sample/sample.router";
 dotenv.config();
 
 const app = express();
-const port = Number.parseInt(process.env.PORT) || 8080;
+const port = Number.parseInt(process.env.PORT as string) || 8080;
 
 // Middleware
 app.use(express.json());
